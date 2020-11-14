@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import FileData_000000,FileDataDriving,FileDataParking,FileDataRadar,FileDataVideo,FileType,BaseFilePath
+from .models import FileData_000000,FileDataDriving,FileDataParking,FileDataRadar,FileDataVideo,FileType,BaseFilePath,Labels
 
 
 class FileData_000000Serializers(serializers.Serializer):
@@ -31,4 +31,8 @@ class FileTypeSerializers(serializers.Serializer):
 class BaseFilePathSerializers(serializers.Serializer):
     class Meta:
         model = BaseFilePath
+        fields = '__all__'
+class LabelsSerializers(serializers.Serializer):
+    class Meta:
+        model = Labels
         fields = '__all__'

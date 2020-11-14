@@ -25,7 +25,7 @@ SECRET_KEY = 'sc0!u@8nw%iau2qswu)-bg%u7f=r5!u@9lox#6p+rfem%g*jkj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,12 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'new_app',
     
     'rest_framework',
     'corsheaders',
 ]
-
+CRONJOBS=(
+	# 每天23：59分运行这个任务
+	('59 23 * * *', 'new_app.cron.create_db_data'),
+)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -124,7 +128,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

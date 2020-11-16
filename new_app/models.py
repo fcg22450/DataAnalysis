@@ -41,7 +41,7 @@ class FileDataDriving(Base):
     file_create_time = models.CharField(max_length=200)
     file_update_time = models.CharField(max_length=200)
     file_video_length = models.CharField(max_length=200)
-    file_label = models.CharField(max_length=200,default='[0]')
+    file_label = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'file_data_driving'
@@ -55,7 +55,7 @@ class FileDataParking(Base):
     file_create_time = models.CharField(max_length=200)
     file_update_time = models.CharField(max_length=200)
     file_video_length = models.CharField(max_length=200)
-    file_label = models.CharField(max_length=200,default='[0]')
+    file_label = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'file_data_parking'
@@ -69,7 +69,7 @@ class FileDataRadar(Base):
     file_create_time = models.CharField(max_length=200)
     file_update_time = models.CharField(max_length=200)
     file_video_length = models.CharField(max_length=200)
-    file_label = models.CharField(max_length=200,default='[0]')
+    file_label = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'file_data_radar'
@@ -83,7 +83,7 @@ class FileDataVideo(Base):
     file_create_time = models.CharField(max_length=200)
     file_update_time = models.CharField(max_length=200)
     file_video_length = models.CharField(max_length=200)
-    file_label = models.CharField(max_length=200,default='[0]')
+    file_label = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'file_data_video'

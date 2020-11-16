@@ -69,11 +69,18 @@ class FileDataGet(APIView):
             for file_data in file_data_list:
                 file_data['db'] = table
                 label_list = []
-                for label in json.loads(file_data['file_label']):
-                    label_name = Labels.objects.filter(id=label).first().label
-                    label_list.append(label_name)
-                file_data['file_label'] = ''.join(label_list)
-                file_data['file_path'] = base_file_path + file_data['file_path']
+                if file_data['file_label'] != 'None' and file_data['file_label'] != '' and file_data['file_label'] != 'null':
+                    for label in json.loads(file_data['file_label']):
+                        labels = Labels.objects.filter(id=label).first()
+                        if labels:
+                            label_name = labels.label
+                        else:
+                            label_name = 'None'
+                        label_list.append(label_name)
+                    file_data['file_label'] = ','.join(label_list)
+                else:
+                    file_data['file_label'] = 'None'
+                file_data['file_path'] = base_file_path + '\\' +  file_data['file_path']
                 new_data_list.append(file_data)
             data_list.extend(new_data_list)
         return Response({"code":200, 'message':'请求成功', 'data':data_list})
@@ -92,9 +99,18 @@ class LabelClass(APIView):
             label = Labels()
             label.label = label_name
             label.save()
-            label_id = Labels.objects.filter(label=label_name).first()
+            label_id = Labels.objects.filter(label=label_name).first().id
         file_data = eval(db).objects.filter(id=file_id).first()
-        file_data.file_label = json.dumps(json.loads(file_data.file_label).append(label_id))
+        
+        print(type(json.loads(file_data.file_label)))
+        if file_data.file_label != '' and file_data.file_label != 'None' and file_data.file_label != 'null':
+            old_lable_lsit = json.loads(file_data.file_label)
+            old_lable_lsit.append(label_id)
+            file_data.file_label = json.dumps(old_lable_lsit)
+        else:
+            file_data.file_label = '[' + str(label_id) + ']'
+        
+        print(json.loads(file_data.file_label))
         file_data.save()
         res['code'] = 200
         res['message'] = '标签修改成功'
@@ -102,22 +118,27 @@ class LabelClass(APIView):
 # 标签修改
 class UpdateLabel(APIView):
     def get(self, request):
-        new_label = request.GET.get('label', None).split(',')
+        new_label = request.GET.get('label', None)
+        if "," in new_label:
+            new_label = new_label.split(',')
+        else:
+            new_label = [new_label]
         db = request.GET.get('table', None)
         file_id = request.GET.get('id', None)
         label_list = []
         for label in new_label:
-            labels = Labels.objects.filter(label=label_name).first()
+            labels = Labels.objects.filter(label=label).first()
             if labels:
                 label_id = labels.id
             else:
                 label = Labels()
-                label.label = label_name
+                label.label = label
                 label.save()
-                label_id = Labels.objects.filter(label=label_name).first()
+                label_id = Labels.objects.filter(label=label).first()
             label_list.append(label_id)
         file_data = eval(db).objects.filter(id=file_id).first()
         file_data.file_label = json.dumps(label_list)
+        file_data.save()
         res = {}
         res['code'] = 200
         res['message'] = '修改成功'

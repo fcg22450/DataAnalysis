@@ -37,12 +37,14 @@ class FileDataGet(APIView):
         min_file_size, max_file_size = data['file_size']
         # 选定的搜索范围   元组形式
         file_path = data['file_path']
+        # 手动选择的次级搜索路径
+        file_path_search = data['file_path_search']
         # 获取到要进行搜索的表名
         search_table = []
         if file_path:
             for path in file_path:
-                table_name = BaseFilePath.objects.filter(table_name=path).first().table_name
-                search_table.append(table_name)
+                # table_name = BaseFilePath.objects.filter(table_name=path).first().table_name
+                search_table.append(path)
         else:
             search_table = [x['table_name'] for x in BaseFilePath.objects.all().values()]
         conditions = {}
@@ -53,6 +55,8 @@ class FileDataGet(APIView):
         if min_file_size and max_file_size:
             conditions['file_type__gte'] = min_file_size
             conditions['file_type__lte'] = max_file_size
+        if file_path_search:
+            conditions['file_path__icontains'] = file_path_search
         data_list = []
         for table in search_table:
         # 判断是否限定文件大小
@@ -83,7 +87,9 @@ class FileDataGet(APIView):
                 file_data['file_path'] = base_file_path + '\\' +  file_data['file_path']
                 new_data_list.append(file_data)
             data_list.extend(new_data_list)
+        
         return Response({"code":200, 'message':'请求成功', 'data':data_list})
+    
 # 标签创建接口
 class LabelClass(APIView):
     def get(self, request):
